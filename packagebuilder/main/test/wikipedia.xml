@@ -1,0 +1,15 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <!-- Created on Wed, 07 Jan 2009 02:25:05 GMT -->
+  <ShortName>Wikipedia (en) - Go</ShortName>
+  <Description>Wikipedia, the free encyclopedia</Description>
+  <Url method="get" template="http://en.wikipedia.org/wiki/Special:Search?search={searchTerms}&amp;go=Go" type="text/html"></Url>
+  <Url template="http://en.wikipedia.org/w/api.php?action=opensearch&amp;search={searchTerms}" type="application/x-suggestions+json"></Url>
+  <Contact>rocksoccer2004@gmail.com</Contact>
+  <Image height="16" width="16">http://mycroft.mozdev.org/updateos.php/id0/wikipedia.ico</Image>
+  <Developer>rocksoccer</Developer>
+  <InputEncoding>UTF-8</InputEncoding>
+  <moz:SearchForm>http://en.wikipedia.org</moz:SearchForm>
+  <moz:UpdateUrl>http://mycroft.mozdev.org/updateos.php/id0/wikipedia.xml</moz:UpdateUrl>
+  <moz:IconUpdateUrl>http://mycroft.mozdev.org/updateos.php/id0/wikipedia.ico</moz:IconUpdateUrl>
+  <moz:UpdateInterval>7</moz:UpdateInterval>
+</OpenSearchDescription>
