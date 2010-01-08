@@ -70,9 +70,9 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'registration',
+    #'registration',
     #'django_authopenid',
-    'packagebuilder.main'
+    'packagebuilder.main',
 )
 
 from settings_local import *
