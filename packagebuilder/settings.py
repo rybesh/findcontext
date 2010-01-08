@@ -73,6 +73,7 @@ INSTALLED_APPS = (
     #'registration',
     #'django_authopenid',
     'packagebuilder.main',
+    'packagebuilder.api',
 )
 
 from settings_local import *
