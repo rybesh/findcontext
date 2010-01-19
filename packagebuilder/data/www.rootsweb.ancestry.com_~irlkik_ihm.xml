@@ -1,5 +1,5 @@
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-  <ShortName>Ireland's History in Maps<ShortName>
+  <ShortName>Ireland's History in Maps</ShortName>
   <Description>Irish history, geography, and genealogy, with a special focus on ancient and medieval Irish tribes and septs.</Description>
   <Url method="get" template="http://www.google.com/search?tbo=1&amp;tbs=tl:1&amp;q=site:www.rootsweb.ancestry.com/~irlkik/ihm+{searchTerms}" type="text/html"/>
   <Developer>Ryan Shaw</Developer>
