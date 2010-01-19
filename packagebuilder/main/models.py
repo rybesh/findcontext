@@ -126,4 +126,6 @@ class Package(models.Model):
     description = models.TextField()
     owner = models.ForeignKey(User)
     resources = models.ManyToManyField(Resource)
+    def __unicode__(self):
+        return self.name
 
