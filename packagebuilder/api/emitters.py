@@ -1,14 +1,50 @@
 from piston.emitters import XMLEmitter, JSONEmitter
-from main.models import Resource
+from django.utils import feedgenerator
+from django.contrib.sites.models import Site
+from main.models import Resource, Package
 from lxml import etree
+from lxml.builder import ElementMaker
 import json
 
-class CustomXMLEmitter(XMLEmitter):
+ATOM_NS = 'http://www.w3.org/2005/Atom'
+a = ElementMaker(namespace=ATOM_NS, nsmap={ None: ATOM_NS })
+
+class OSDEmitter(XMLEmitter):
     def render(self, request):
         if isinstance(self.data, Resource):
             return etree.tostring(self.data.open_search_description, 
-                                  encoding='UTF-8', pretty_print=True)
-        return super(CustomXMLEmitter, self).render(request)
+                                  encoding='utf-8', pretty_print=True,
+                                  xml_declaration=True)
+        return super(OSDEmitter, self).render(request)
+
+class AtomEmitter(XMLEmitter):
+    def render(self, request):
+        if isinstance(self.data, Package):
+            package = self.data
+            feed = a.feed(
+                a.title(package.name),
+                a.id('http://%s%s' % (
+                        Site.objects.get_current().domain,
+                        package.get_absolute_url())),
+                a.updated(feedgenerator.rfc3339_date(package.last_updated)),
+                a.subtitle(package.description),
+                #a.link(rel='self', href=package.get_absolute_url())
+                )
+            for resource in package.resources.all():
+                feed.append(a.entry(
+                        a.title(resource.short_name),
+                        a.id('http://%s%s' % (
+                                Site.objects.get_current().domain,
+                                resource.get_absolute_url())),
+                        a.updated(feedgenerator.rfc3339_date(resource.last_updated)),
+                        a.summary(resource.description),
+                        a.author(a.name(resource.developer)),
+                        a.content(
+                            resource.open_search_description,
+                            type='application/opensearchdescription+xml')))
+            return etree.tostring(feed, encoding='utf-8', pretty_print=True,
+                                  xml_declaration=True)
+        return super(AtomEmitter, self).render(request)    
 
 class CustomJSONEmitter(JSONEmitter):
     @classmethod

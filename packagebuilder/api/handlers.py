@@ -1,4 +1,4 @@
-from api.emitters import CustomXMLEmitter, CustomJSONEmitter
+from api.emitters import OSDEmitter, AtomEmitter, CustomJSONEmitter
 from django import forms
 from django.http import HttpResponse
 from lxml import etree
@@ -17,11 +17,17 @@ class ResourceHandler(BaseHandler):
     allowed_methods = ('GET', 'POST', 'DELETE')
     model = Resource
     anonymous = AnonymousResourceHandler
+    def bad_request(self, message):
+        return HttpResponse('Bad Request: %s' % message, status=400)
+
     def create(self, request, *args, **kwargs):
+        if not request.content_type == 'application/opensearchdescription+xml':
+            return self.bad_request(
+                'Content-Type must be application/opensearchdescription+xml')
         try:
             osd_schema.assertValid(request.data)
         except etree.DocumentInvalid as e:
-            return HttpResponse(e.message, status=400)
+            return self.bad_request(e.message)
         short_name = request.data.find(
             '{http://a9.com/-/spec/opensearch/1.1/}ShortName').text
         if Resource.objects.filter(_short_name__exact=short_name).count() > 0:
@@ -30,7 +36,17 @@ class ResourceHandler(BaseHandler):
             Resource.objects.create(open_search_description=request.data)
             return rc.CREATED
 
-Emitter.register('xml', CustomXMLEmitter, 'text/xml; charset=utf-8')
+class AnonymousPackageHandler(AnonymousBaseHandler):
+    allowed_methods = ('GET',)
+    model = Package
+
+class PackageHandler(BaseHandler):
+    allowed_methods = ('GET',)
+    model = Package
+    anonymous = AnonymousPackageHandler
+
+Emitter.register('osd', OSDEmitter, 'application/opensearchdescription+xml; charset=utf-8')
+Emitter.register('atom', AtomEmitter, 'application/atom+xml; charset=utf-8')
 Emitter.register('json', CustomJSONEmitter, 'application/json; charset=utf-8')
 
 def load_xml(raw_post_data):
@@ -39,7 +55,6 @@ def load_xml(raw_post_data):
     except etree.XMLSyntaxError:
         raise ValueError
 
-Mimer.unregister(Mimer(None).loader_for_type('text/xml'))
-Mimer.register(load_xml, ('text/xml',))
+Mimer.register(load_xml, ('application/opensearchdescription+xml',))
 
         

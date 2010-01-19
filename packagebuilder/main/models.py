@@ -94,6 +94,7 @@ class Resource(models.Model):
     """
     open_search_description = ElementField()
     _short_name = models.CharField(max_length=64, unique=True, editable=False, db_column='short_name')
+    last_updated = models.DateTimeField(auto_now=True, editable=False)
     _derived_attributes = set()
     @classmethod
     def get(cls, short_name):
@@ -106,6 +107,8 @@ class Resource(models.Model):
     def save(self, *args, **kwargs):
         self._short_name = self.short_name
         super(Resource, self).save(*args, **kwargs)
+    def get_absolute_url(self):
+        return '/api/resource/%i' % self.id
     def __getattr__(self, key):
         camel_key = ''.join([ s.capitalize() for s in key.split('_') ])
         value = self.get_open_search_value(
@@ -126,6 +129,9 @@ class Package(models.Model):
     description = models.TextField()
     owner = models.ForeignKey(User)
     resources = models.ManyToManyField(Resource)
+    last_updated = models.DateTimeField(auto_now=True, editable=False)
+    def get_absolute_url(self):
+        return '/api/package/%i' % self.id
     def __unicode__(self):
         return self.name
 
