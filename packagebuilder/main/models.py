@@ -84,6 +84,10 @@ class Resource(models.Model):
     >>> r3 = Resource.get('WorldCat Catalog: Books')
     >>> print r3.description
     Search Open WorldCat Catalog for Books
+
+    # Clean up
+    >>> r.delete()
+    >>> r3.delete()
     """
     open_search_description = ElementField()
     _short_name = models.CharField(max_length=64, unique=True, editable=False, db_column='short_name')
