@@ -1,6 +1,6 @@
 <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
   <!-- Created on Wed, 07 Jan 2009 02:25:05 GMT -->
-  <ShortName>Wikipedia (en) - Go</ShortName>
+  <ShortName>ウィキペディア（英語）</ShortName>
   <Description>Wikipedia, the free encyclopedia</Description>
   <Url method="get" template="http://en.wikipedia.org/wiki/Special:Search?search={searchTerms}&amp;go=Go" type="text/html"></Url>
   <Url template="http://en.wikipedia.org/w/api.php?action=opensearch&amp;search={searchTerms}" type="application/x-suggestions+json"></Url>

@@ -1,0 +1,7 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>The Celtic Christianity e-Library</ShortName>
+  <Description>Searchable sources for the study of Celtic and Insular Christianity from the University of Wales Lampeter.</Description>
+  <Url method="get" template="http://www.google.com/search?tbo=1&amp;tbs=tl:1&amp;q=site:www.lamp.ac.uk/celtic/elibrary+{searchTerms}" type="text/html"/>
+  <Developer>Ryan Shaw</Developer>
+  <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

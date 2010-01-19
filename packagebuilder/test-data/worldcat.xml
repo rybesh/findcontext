@@ -1,0 +1,13 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <!-- Created on Thu, 18 Dec 2008 14:14:18 GMT -->
+  <ShortName>WorldCat Catalog: Books</ShortName>
+  <Description>Search Open WorldCat Catalog for Books</Description>
+  <Url method="get" template="http://www.worldcat.org/search?qt=worldcat_org_bks&amp;q={searchTerms}&amp;sourceid=mozilla-search" type="text/html"></Url>
+  <Image height="16" width="16">http://mycroft.mozdev.org/updateos.php/id0/worldcat.png</Image>
+  <Developer>Dan Phan</Developer>
+  <InputEncoding>ISO-8859-1</InputEncoding>
+  <moz:SearchForm>http://www.worldcat.org</moz:SearchForm>
+  <moz:UpdateUrl>http://mycroft.mozdev.org/updateos.php/id0/worldcat.xml</moz:UpdateUrl>
+  <moz:IconUpdateUrl>http://mycroft.mozdev.org/updateos.php/id0/worldcat.png</moz:IconUpdateUrl>
+  <moz:UpdateInterval>7</moz:UpdateInterval>
+</OpenSearchDescription>

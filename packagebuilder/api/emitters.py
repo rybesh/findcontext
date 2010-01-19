@@ -6,8 +6,8 @@ import json
 class CustomXMLEmitter(XMLEmitter):
     def render(self, request):
         if isinstance(self.data, Resource):
-            return etree.tostring(
-                self.data.open_search_description, pretty_print=True)
+            return etree.tostring(self.data.open_search_description, 
+                                  encoding='UTF-8', pretty_print=True)
         return super(CustomXMLEmitter, self).render(request)
 
 class CustomJSONEmitter(JSONEmitter):
@@ -45,6 +45,6 @@ class CustomJSONEmitter(JSONEmitter):
         if isinstance(self.data, Resource):
             return json.dumps(
                 self.element_to_dict(self.data.open_search_description, {}))
-        return super(CustomXMLEmitter, self).render(request)
+        return super(CustomJSONEmitter, self).render(request)
 
 

@@ -1,0 +1,7 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Corpus of Electronic Texts (CELT)</ShortName>
+  <Description>Over a thousand contemporary and historical Irish documents from many areas, including literature and the other arts.</Description>
+  <Url method="get" template="http://www.google.com/search?tbo=1&amp;tbs=tl:1&amp;q=site:www.ucc.ie/celt+{searchTerms}" type="text/html"/>
+  <Developer>Ryan Shaw</Developer>
+  <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

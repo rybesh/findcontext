@@ -1,0 +1,7 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>De Imperatoribus Romanis</ShortName>
+  <Description>An online encyclopedia of Roman rulers and their families.</Description>
+  <Url method="get" template="http://www.google.com/search?tbo=1&amp;tbs=tl:1&amp;q=site:www.roman-emperors.org+{searchTerms}" type="text/html"/>
+  <Developer>Ryan Shaw</Developer>
+  <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

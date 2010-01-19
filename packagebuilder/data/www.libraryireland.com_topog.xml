@@ -1,0 +1,7 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Topographical Dictionary of Ireland</ShortName>
+  <Description>1837 listing of counties, cities, boroughs, towns, parishes, and villages with historical and statistical descriptions.</Description>
+  <Url method="get" template="http://www.google.com/search?tbo=1&amp;tbs=tl:1&amp;q=site:www.libraryireland.com/topog+{searchTerms}" type="text/html"/>
+  <Developer>Ryan Shaw</Developer>
+  <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

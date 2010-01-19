@@ -1,0 +1,7 @@
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Celtic Inscribed Stones Project</ShortName>
+  <Description>Every non-Runic inscription raised on a stone monument within Celtic-speaking areas (Ireland, Scotland, Wales, Dumnonia, Brittany and the Isle of Man) in the early middle ages (AD 400-1000).</Description>
+  <Url method="get" template="http://www.google.com/search?tbo=1&amp;tbs=tl:1&amp;q=site:www.ucl.ac.uk/archaeology/cisp/database+{searchTerms}" type="text/html"/>
+  <Developer>Ryan Shaw</Developer>
+  <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>
