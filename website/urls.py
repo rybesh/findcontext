@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     #(r'^account/', include('registration.backends.default.urls')),
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
     (r'^admin/', include(admin.site.urls)),
+    (r'^sidebar/', include('website.sidebar.urls')),
 )

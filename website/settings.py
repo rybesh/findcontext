@@ -72,6 +72,7 @@ INSTALLED_APPS = (
     #'django_authopenid',
     'website.main',
     'website.api',
+    'website.sidebar',
 )
 
 from settings_local import *
