@@ -1,5 +1,3 @@
-# Django settings for packagebuilder project.
-
 import os.path
 
 DEBUG = True
@@ -57,7 +55,7 @@ MIDDLEWARE_CLASSES = (
     #'django_authopenid.middleware.OpenIDMiddleware',
 )
 
-ROOT_URLCONF = 'packagebuilder.urls'
+ROOT_URLCONF = 'website.urls'
 
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'templates').replace('\\','/'),
@@ -72,8 +70,8 @@ INSTALLED_APPS = (
     'django.contrib.admindocs',
     #'registration',
     #'django_authopenid',
-    'packagebuilder.main',
-    'packagebuilder.api',
+    'website.main',
+    'website.api',
 )
 
 from settings_local import *

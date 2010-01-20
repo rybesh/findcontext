@@ -4,9 +4,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Example:
-    # (r'^packagebuilder/', include('packagebuilder.foo.urls')),
-    (r'^api/', include('packagebuilder.api.urls')),
+    (r'^api/', include('website.api.urls')),
     #(r'^account/', include('django_authopenid.urls')),
     #(r'^account/', include('registration.backends.default.urls')),
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
