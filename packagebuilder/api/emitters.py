@@ -1,6 +1,6 @@
 from piston.emitters import XMLEmitter, JSONEmitter
 from django.utils import feedgenerator
-from django.contrib.sites.models import Site
+from django.contrib.sites.models import RequestSite
 from main.models import Resource, Package
 from lxml import etree
 from lxml.builder import ElementMaker
@@ -20,22 +20,19 @@ class OSDEmitter(XMLEmitter):
 class AtomEmitter(XMLEmitter):
     def render(self, request):
         if isinstance(self.data, Package):
+            domain = RequestSite(request).domain
             package = self.data
+            package_url = 'http://%s%s' % (domain, package.get_absolute_url())
             feed = a.feed(
                 a.title(package.name),
-                a.id('http://%s%s' % (
-                        Site.objects.get_current().domain,
-                        package.get_absolute_url())),
+                a.id(package_url),
                 a.updated(feedgenerator.rfc3339_date(package.last_updated)),
                 a.subtitle(package.description),
-                #a.link(rel='self', href=package.get_absolute_url())
-                )
+                a.link(rel='self', href=package_url))
             for resource in package.resources.all():
                 feed.append(a.entry(
                         a.title(resource.short_name),
-                        a.id('http://%s%s' % (
-                                Site.objects.get_current().domain,
-                                resource.get_absolute_url())),
+                        a.id('http://%s%s' % (domain, resource.get_absolute_url())),
                         a.updated(feedgenerator.rfc3339_date(resource.last_updated)),
                         a.summary(resource.description),
                         a.author(a.name(resource.developer)),

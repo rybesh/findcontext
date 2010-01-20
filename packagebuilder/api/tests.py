@@ -3,6 +3,7 @@ import unittest
 import difflib
 import json
 import base64
+import urllib
 import feedvalidator
 from lxml import etree
 from StringIO import StringIO
@@ -10,6 +11,7 @@ from django.test.client import Client
 from django.contrib.auth.models import User
 from django.utils import feedgenerator
 from main.models import Resource, Package
+from api.utils import TestServerThread
 
 
 class TestCase(unittest.TestCase):
@@ -195,12 +197,13 @@ class PackageTestCase(TestCase):
         expected = '''<?xml version='1.0' encoding='utf-8'?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Test Package</title>
-  <id>http://findcontext.org/api/package/{package_id}</id>
+  <id>http://testserver/api/package/{package_id}</id>
   <updated>{package_updated}</updated>
   <subtitle>This is a test.</subtitle>
+  <link href="http://testserver/api/package/{package_id}" rel="self"/>
   <entry>
     <title>Monasticon Hibernicum</title>
-    <id>http://findcontext.org/api/resource/1</id>
+    <id>http://testserver/api/resource/1</id>
     <updated>2010-01-19T00:18:34Z</updated>
     <summary>Early Christian ecclesiastical settlement in Ireland, 5th to 12th centuries.</summary>
     <author>
@@ -218,7 +221,7 @@ class PackageTestCase(TestCase):
   </entry>
   <entry>
     <title>Celtic Art &amp; Cultures</title>
-    <id>http://findcontext.org/api/resource/12</id>
+    <id>http://testserver/api/resource/12</id>
     <updated>2010-01-19T00:18:35Z</updated>
     <summary>Images of Celtic art, artifacts, and architecture.</summary>
     <author>
@@ -241,17 +244,30 @@ class PackageTestCase(TestCase):
                          response['Content-Type'])
         self.assertEqual(200, response.status_code)
         self.assert_equal_show_diff(expected, response.content)
-        # Validate Atom feed
-        try:
-            events = feedvalidator.validateString(
-                response.content, firstOccurrenceOnly=True)['loggedEvents']
-        except feedvalidator.logging.ValidationFailure as e:
-            events = [e.event]
-        from feedvalidator import compatibility
-        #events = compatibility.AA(events)
-        events = compatibility.A(events)
-        from feedvalidator.formatter.text_plain import Formatter
-        output = Formatter(events)
-        if output:
-            self.fail('\n'.join(output))
-            
+
+
+class LiveServerTestCase(unittest.TestCase):
+
+     def setUp(self):
+          self.server = TestServerThread('127.0.0.1', 8081)
+          self.server.start()
+
+     def tearDown(self):
+          self.server.stop()
+
+     def test_validate_atom(self):
+          try:
+               events = feedvalidator.validateURL(
+                    'http://127.0.0.1:8081/api/package/1')['loggedEvents']
+          except feedvalidator.logging.ValidationFailure as e:
+               events = [e.event]
+          # Filter logged events
+          from feedvalidator import logging
+          events = [ e for e in events 
+                     if isinstance(e, logging.Error) 
+                     or isinstance(e, logging.Warning) 
+                     and not isinstance(e, logging.DuplicateUpdated) ]  
+          # Show any remaining events
+          from feedvalidator.formatter.text_plain import Formatter
+          output = Formatter(events)
+          if output: self.fail('\n'.join(output))
