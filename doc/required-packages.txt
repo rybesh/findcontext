@@ -1,0 +1,7 @@
+Django==1.1.1
+django-piston==0.2.2
+## FIXME: could not find svn URL in dependency_links for this package:
+feedvalidator==0.0.0dev-r1059
+lxml==2.2.4
+psycopg2==2.0.13
+wsgiref==0.1.2
