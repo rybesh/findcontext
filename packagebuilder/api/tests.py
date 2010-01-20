@@ -245,6 +245,123 @@ class PackageTestCase(TestCase):
         self.assertEqual(200, response.status_code)
         self.assert_equal_show_diff(expected, response.content)
 
+    def test_get_package_as_json(self):
+         response = self.c.get('/api/package/%s?format=json' % self.p.id)
+         expected = '''{
+  "feed": {
+    "entry": [
+      {
+        "author": {
+          "name": {
+            "$t": "Ryan Shaw"
+          }
+        }, 
+        "content": {
+          "OpenSearchDescription": {
+            "Description": {
+              "$t": "Early Christian ecclesiastical settlement in Ireland, 5th to 12th centuries."
+            }, 
+            "Developer": {
+              "$t": "Ryan Shaw"
+            }, 
+            "InputEncoding": {
+              "$t": "UTF-8"
+            }, 
+            "ShortName": {
+              "$t": "Monasticon Hibernicum"
+            }, 
+            "Url": {
+              "method": "get", 
+              "template": "http://www.google.com/search?tbo=1&tbs=tl:1&q=site:monasticon.celt.dias.ie+{searchTerms}", 
+              "type": "text/html"
+            }, 
+            "xmlns": "http://a9.com/-/spec/opensearch/1.1/"
+          }, 
+          "type": "application/opensearchdescription+xml"
+        }, 
+        "id": {
+          "$t": "http://testserver/api/resource/1"
+        }, 
+        "summary": {
+          "$t": "Early Christian ecclesiastical settlement in Ireland, 5th to 12th centuries."
+        }, 
+        "title": {
+          "$t": "Monasticon Hibernicum"
+        }, 
+        "updated": {
+          "$t": "2010-01-19T00:18:34Z"
+        }
+      }, 
+      {
+        "author": {
+          "name": {
+            "$t": "Ryan Shaw"
+          }
+        }, 
+        "content": {
+          "OpenSearchDescription": {
+            "Description": {
+              "$t": "Images of Celtic art, artifacts, and architecture."
+            }, 
+            "Developer": {
+              "$t": "Ryan Shaw"
+            }, 
+            "InputEncoding": {
+              "$t": "UTF-8"
+            }, 
+            "ShortName": {
+              "$t": "Celtic Art & Cultures"
+            }, 
+            "Url": {
+              "method": "get", 
+              "template": "http://www.google.com/search?tbo=1&tbs=tl:1&q=site:www.unc.edu/celtic+{searchTerms}", 
+              "type": "text/html"
+            }, 
+            "xmlns": "http://a9.com/-/spec/opensearch/1.1/"
+          }, 
+          "type": "application/opensearchdescription+xml"
+        }, 
+        "id": {
+          "$t": "http://testserver/api/resource/12"
+        }, 
+        "summary": {
+          "$t": "Images of Celtic art, artifacts, and architecture."
+        }, 
+        "title": {
+          "$t": "Celtic Art & Cultures"
+        }, 
+        "updated": {
+          "$t": "2010-01-19T00:18:35Z"
+        }
+      }
+    ], 
+    "id": {
+      "$t": "http://testserver/api/package/%(package_id)i"
+    }, 
+    "link": {
+      "href": "http://testserver/api/package/%(package_id)i", 
+      "rel": "self"
+    }, 
+    "subtitle": {
+      "$t": "This is a test."
+    }, 
+    "title": {
+      "$t": "Test Package"
+    }, 
+    "updated": {
+      "$t": "%(package_updated)s"
+    }, 
+    "xmlns": "http://www.w3.org/2005/Atom"
+  }
+}''' % { 'package_id': self.p.id, 
+        'package_updated': feedgenerator.rfc3339_date(self.p.last_updated) }
+         self.assertEqual('application/json; charset=utf-8', 
+                          response['Content-Type'])
+         self.assertEqual(200, response.status_code)
+         self.assert_equal_show_diff(expected, 
+                                     json.dumps(json.loads(response.content), 
+                                                sort_keys=True, indent=2))
+
 
 class LiveServerTestCase(unittest.TestCase):
 
