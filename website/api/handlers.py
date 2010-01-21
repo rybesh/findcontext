@@ -39,6 +39,7 @@ class ResourceHandler(BaseHandler):
 class AnonymousPackageHandler(AnonymousBaseHandler):
     allowed_methods = ('GET',)
     model = Package
+    fields = ('uri', 'name', 'description')
 
 class PackageHandler(BaseHandler):
     allowed_methods = ('GET',)

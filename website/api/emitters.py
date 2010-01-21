@@ -1,10 +1,12 @@
-from piston.emitters import XMLEmitter, JSONEmitter
+import json
+from datetime import datetime
+from django.contrib.sites.models import Site
+from django.db.models.query import QuerySet
 from django.utils import feedgenerator
-from django.contrib.sites.models import RequestSite
-from main.models import Resource, Package
 from lxml import etree
 from lxml.builder import ElementMaker
-import json
+from main.models import Resource, Package
+from piston.emitters import XMLEmitter, JSONEmitter
 
 ATOM_NS = 'http://www.w3.org/2005/Atom'
 a = ElementMaker(namespace=ATOM_NS, nsmap={ None: ATOM_NS })
@@ -23,16 +25,26 @@ class OSDEmitter(XMLEmitter):
 class AtomEmitter(XMLEmitter):
 
     @classmethod
-    def package_to_atom(cls, request, package):
-        domain = RequestSite(request).domain
-        package_url = 'http://%s%s' % (domain, package.get_absolute_url())
+    def package_to_atom(cls, package):
+        return cls.resources_to_atom(
+            package.resources.all(), package.name, package.description,
+            package.last_updated, package.get_absolute_url())
+    
+    @classmethod
+    def resources_to_atom(cls, resources, 
+                          name='All resources', 
+                          description='All available resources.',
+                          updated=datetime.now(),
+                          absolute_url='/api/resource/'):
+        domain = Site.objects.get_current().domain
+        url = 'http://%s%s' % (domain, absolute_url)
         feed = a.feed(
-            a.title(package.name),
-            a.id(package_url),
-            a.updated(feedgenerator.rfc3339_date(package.last_updated)),
-            a.subtitle(package.description),
-            a.link(rel='self', href=package_url))
-        for resource in package.resources.all():
+            a.title(name),
+            a.id(url),
+            a.updated(feedgenerator.rfc3339_date(updated)),
+            a.subtitle(description),
+            a.link(rel='self', href=url))
+        for resource in resources:
             feed.append(a.entry(
                     a.title(resource.short_name),
                     a.id('http://%s%s' % (domain, resource.get_absolute_url())),
@@ -43,12 +55,16 @@ class AtomEmitter(XMLEmitter):
                         resource.open_search_description,
                         type='application/opensearchdescription+xml')))
         return feed
-        
+
+    def serialize(self, doc):
+        return etree.tostring(doc, encoding='utf-8', pretty_print=True,
+                              xml_declaration=True)
+
     def render(self, request):
         if isinstance(self.data, Package):
-            feed = self.package_to_atom(request, self.data)
-            return etree.tostring(feed, encoding='utf-8', pretty_print=True,
-                                  xml_declaration=True)
+            return self.serialize(self.package_to_atom(self.data))
+        if isinstance(self.data, QuerySet):
+            return self.serialize(self.resources_to_atom(self.data))
         return super(AtomEmitter, self).render(request)    
 
 
@@ -100,7 +116,7 @@ class CustomJSONEmitter(JSONEmitter):
         if isinstance(self.data, Package):
             return json.dumps(
                 self.element_to_dict(
-                    AtomEmitter.package_to_atom(request, self.data), {}))
+                    AtomEmitter.package_to_atom(self.data), {}))
         return super(CustomJSONEmitter, self).render(request)
 
 

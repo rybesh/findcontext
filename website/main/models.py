@@ -3,6 +3,7 @@
 from django import forms
 from django.db import models, transaction
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from lxml import etree
 
 class ElementField(models.Field):
@@ -109,6 +110,10 @@ class Resource(models.Model):
         super(Resource, self).save(*args, **kwargs)
     def get_absolute_url(self):
         return '/api/resource/%i' % self.id
+    def _get_uri(self):
+        return 'http://%s%s' % (Site.objects.get_current().domain,
+                                self.get_absolute_url())
+    uri = property(_get_uri)
     def __getattr__(self, key):
         camel_key = ''.join([ s.capitalize() for s in key.split('_') ])
         value = self.get_open_search_value(
@@ -132,6 +137,10 @@ class Package(models.Model):
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     def get_absolute_url(self):
         return '/api/package/%i' % self.id
+    def _get_uri(self):
+        return 'http://%s%s' % (Site.objects.get_current().domain,
+                                self.get_absolute_url())
+    uri = property(_get_uri)
     def __unicode__(self):
         return self.name
 

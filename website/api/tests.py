@@ -5,6 +5,7 @@ import json
 import base64
 import urllib
 import feedvalidator
+import time
 from lxml import etree
 from StringIO import StringIO
 from django.test.client import Client
@@ -197,13 +198,13 @@ class PackageTestCase(TestCase):
         expected = '''<?xml version='1.0' encoding='utf-8'?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Test Package</title>
-  <id>http://testserver/api/package/{package_id}</id>
+  <id>http://findcontext.org/api/package/{package_id}</id>
   <updated>{package_updated}</updated>
   <subtitle>This is a test.</subtitle>
-  <link href="http://testserver/api/package/{package_id}" rel="self"/>
+  <link href="http://findcontext.org/api/package/{package_id}" rel="self"/>
   <entry>
     <title>Monasticon Hibernicum</title>
-    <id>http://testserver/api/resource/1</id>
+    <id>http://findcontext.org/api/resource/1</id>
     <updated>2010-01-19T00:18:34Z</updated>
     <summary>Early Christian ecclesiastical settlement in Ireland, 5th to 12th centuries.</summary>
     <author>
@@ -221,7 +222,7 @@ class PackageTestCase(TestCase):
   </entry>
   <entry>
     <title>Celtic Art &amp; Cultures</title>
-    <id>http://testserver/api/resource/12</id>
+    <id>http://findcontext.org/api/resource/12</id>
     <updated>2010-01-19T00:18:35Z</updated>
     <summary>Images of Celtic art, artifacts, and architecture.</summary>
     <author>
@@ -280,7 +281,7 @@ class PackageTestCase(TestCase):
           "type": "application/opensearchdescription+xml"
         }, 
         "id": {
-          "$t": "http://testserver/api/resource/1"
+          "$t": "http://findcontext.org/api/resource/1"
         }, 
         "summary": {
           "$t": "Early Christian ecclesiastical settlement in Ireland, 5th to 12th centuries."
@@ -322,7 +323,7 @@ class PackageTestCase(TestCase):
           "type": "application/opensearchdescription+xml"
         }, 
         "id": {
-          "$t": "http://testserver/api/resource/12"
+          "$t": "http://findcontext.org/api/resource/12"
         }, 
         "summary": {
           "$t": "Images of Celtic art, artifacts, and architecture."
@@ -336,10 +337,10 @@ class PackageTestCase(TestCase):
       }
     ], 
     "id": {
-      "$t": "http://testserver/api/package/%(package_id)i"
+      "$t": "http://findcontext.org/api/package/%(package_id)i"
     }, 
     "link": {
-      "href": "http://testserver/api/package/%(package_id)i", 
+      "href": "http://findcontext.org/api/package/%(package_id)i", 
       "rel": "self"
     }, 
     "subtitle": {
@@ -362,6 +363,18 @@ class PackageTestCase(TestCase):
                                      json.dumps(json.loads(response.content), 
                                                 sort_keys=True, indent=2))
 
+    def test_get_packages_as_json(self):
+         response = self.c.get('/api/package/')
+         self.assertEqual('application/json; charset=utf-8', 
+                          response['Content-Type'])
+         self.assertEqual(200, response.status_code)
+         o = json.loads(response.content)
+         self.assertEqual(2, len(o))
+         self.assertEqual('http://findcontext.org/api/package/1', o[0]['uri'])
+         self.assertEqual('Celtic Studies 138', o[0]['name'])
+         self.assertEqual('http://findcontext.org/api/package/4', o[1]['uri'])
+         self.assertEqual('Test Package', o[1]['name'])
+
 
 class LiveServerTestCase(unittest.TestCase):
 
@@ -372,19 +385,25 @@ class LiveServerTestCase(unittest.TestCase):
      def tearDown(self):
           self.server.stop()
 
-     def test_validate_atom(self):
+     def validate_atom(self, url):
           try:
-               events = feedvalidator.validateURL(
-                    'http://127.0.0.1:8081/api/package/1')['loggedEvents']
+               events = feedvalidator.validateURL(url)['loggedEvents']
           except feedvalidator.logging.ValidationFailure as e:
                events = [e.event]
           # Filter logged events
           from feedvalidator import logging
-          events = [ e for e in events 
-                     if isinstance(e, logging.Error) 
-                     or isinstance(e, logging.Warning) 
-                     and not isinstance(e, logging.DuplicateUpdated) ]  
+          events = [ e for e in events if 
+                     isinstance(e, logging.Error) or 
+                     (isinstance(e, logging.Warning) 
+                      and not isinstance(e, logging.DuplicateUpdated)
+                      and not isinstance(e, logging.SelfDoesntMatchLocation)) ]
           # Show any remaining events
           from feedvalidator.formatter.text_plain import Formatter
           output = Formatter(events)
           if output: self.fail('\n'.join(output))
+
+     def test_validate_package(self):
+          self.validate_atom('http://127.0.0.1:8081/api/package/1')
+
+     def test_validate_all_resources(self):
+          self.validate_atom('http://127.0.0.1:8081/api/resource/')

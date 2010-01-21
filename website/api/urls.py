@@ -3,22 +3,31 @@ from piston.resource import Resource
 from piston.authentication import HttpBasicAuthentication
 from api.handlers import ResourceHandler, PackageHandler
 
-class ResourceResource(Resource):
+class ResourcesResource(Resource):
     def determine_emitter(self, request, *args, **kwargs):
-        return request.GET.get('format', 'osd')
+        if len(kwargs) == 0: # no id specified
+            default = 'atom'
+        else: 
+            default = 'osd'
+        return request.GET.get('format', default)
 
-class PackageResource(Resource):
+class PackagesResource(Resource):
     def determine_emitter(self, request, *args, **kwargs):
-        return request.GET.get('format', 'atom')
+        if len(kwargs) == 0: # no id specified
+            default = 'json'
+        else: 
+            default = 'atom'
+        return request.GET.get('format', default)
 
-resources = ResourceResource(
+resources = ResourcesResource(
     ResourceHandler, authentication=HttpBasicAuthentication())
-packages = PackageResource(
+packages = PackagesResource(
     PackageHandler, authentication=HttpBasicAuthentication())
 
 urlpatterns = patterns('',
    url(r'^resource/$', resources),
    url(r'^resource/(?P<id>[^/]+)$', resources),
+   url(r'^package/$', packages),
    url(r'^package/(?P<id>[^/]+)$', packages),
 )
 
