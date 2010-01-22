@@ -94,7 +94,7 @@ class Resource(models.Model):
     >>> r3.delete()
     """
     open_search_description = ElementField()
-    _short_name = models.CharField(max_length=64, unique=True, editable=False, db_column='short_name')
+    _short_name = models.CharField(max_length=36, unique=True, editable=False, db_column='short_name')
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     _derived_attributes = set()
     @classmethod
