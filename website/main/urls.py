@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
-from sidebar.views import index
+from main.views import sidebar
 
 urlpatterns = patterns('',
-   url(r'^$', index),
+   url(r'^sidebar$', sidebar),
 )
 

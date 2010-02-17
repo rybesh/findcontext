@@ -52,7 +52,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    #'django_authopenid.middleware.OpenIDMiddleware',
 )
 
 ROOT_URLCONF = 'website.urls'
@@ -68,11 +67,8 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    #'registration',
-    #'django_authopenid',
     'website.main',
     'website.api',
-    'website.sidebar',
 )
 
 from settings_local import *
