@@ -40,23 +40,29 @@ function updateSlidebar(callback) {
   }
 }
 
+function addSlidebarEventListener(slidebar) {
+  console.log('adding event listener');
+  var root = slidebar.contentDocument.rootElement;
+  root.addEventListener('mousedown', function(event) {
+    var node = event.target;
+    console.log('mousedown on', node);
+    while (node !== root) {
+      if (node.getAttribute('class') === 'querylink') {
+        var url = node.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+        if ((node.tab && node.tab.isClosed) || (! node.tab)) {
+          node.tab = jetpack.tabs.open(url);
+        }
+        node.tab.focus();
+        break;
+      }
+      node = node.parentNode;
+    }
+  }, false);
+}
+
 function onContextMenuItemClick() {
   updateSlidebar(function(slidebar) {
-    var root = slidebar.contentDocument.rootElement;
-    root.addEventListener('mousedown', function(event) {
-      var node = event.target;
-      while (node !== root) {
-        if (node.getAttribute('class') === 'querylink') {
-          var url = node.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-          if ((node.tab && node.tab.isClosed) || (! node.tab)) {
-            node.tab = jetpack.tabs.open(url);
-          }
-          node.tab.focus();
-          break;
-        }
-        node = node.parentNode;
-      }
-    }, false);
+    addSlidebarEventListener(slidebar);
     slidebar.select();
   });
 }
