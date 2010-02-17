@@ -16,12 +16,11 @@ from api.utils import TestServerThread
 
 
 class TestCase(unittest.TestCase):
-     def assert_equal_show_diff(self, a, b):
+    def assert_equal_show_diff(self, a, b):
         self.assertEqual(a, b, '\n' + ''.join(difflib.ndiff(a.splitlines(True), 
                                                             b.splitlines(True))))
 
 class ResourceTestCase(TestCase):
-
     def setUp(self):
         self.c = Client()
         self.r = Resource.objects.create(
@@ -214,7 +213,7 @@ class PackageTestCase(TestCase):
       <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
   <ShortName>Monasticon Hibernicum</ShortName>
   <Description>Early Christian ecclesiastical settlement in Ireland, 5th to 12th centuries.</Description>
-  <Url method="get" template="http://www.google.com/search?tbo=1&amp;tbs=tl:1&amp;q=site:monasticon.celt.dias.ie+{{searchTerms}}" type="text/html"/>
+  <Url method="get" template="http://www.google.com/search?q=site:monasticon.celt.dias.ie+{{searchTerms}}" type="text/html"/>
   <Developer>Ryan Shaw</Developer>
   <InputEncoding>UTF-8</InputEncoding>
 </OpenSearchDescription>
@@ -232,7 +231,7 @@ class PackageTestCase(TestCase):
       <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
   <ShortName>Celtic Art &amp; Cultures</ShortName>
   <Description>Images of Celtic art, artifacts, and architecture.</Description>
-  <Url method="get" template="http://www.google.com/search?tbo=1&amp;tbs=tl:1&amp;q=site:www.unc.edu/celtic+{{searchTerms}}" type="text/html"/>
+  <Url method="get" template="http://www.google.com/search?q=site:www.unc.edu/celtic+{{searchTerms}}" type="text/html"/>
   <Developer>Ryan Shaw</Developer>
   <InputEncoding>UTF-8</InputEncoding>
 </OpenSearchDescription>
@@ -273,7 +272,7 @@ class PackageTestCase(TestCase):
             }, 
             "Url": {
               "method": "get", 
-              "template": "http://www.google.com/search?tbo=1&tbs=tl:1&q=site:monasticon.celt.dias.ie+{searchTerms}", 
+              "template": "http://www.google.com/search?q=site:monasticon.celt.dias.ie+{searchTerms}", 
               "type": "text/html"
             }, 
             "xmlns": "http://a9.com/-/spec/opensearch/1.1/"
@@ -315,7 +314,7 @@ class PackageTestCase(TestCase):
             }, 
             "Url": {
               "method": "get", 
-              "template": "http://www.google.com/search?tbo=1&tbs=tl:1&q=site:www.unc.edu/celtic+{searchTerms}", 
+              "template": "http://www.google.com/search?q=site:www.unc.edu/celtic+{searchTerms}", 
               "type": "text/html"
             }, 
             "xmlns": "http://a9.com/-/spec/opensearch/1.1/"

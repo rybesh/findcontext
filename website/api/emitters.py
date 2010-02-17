@@ -28,26 +28,26 @@ class AtomEmitter(XMLEmitter):
     def package_to_atom(cls, package):
         return cls.resources_to_atom(
             package.resources.all(), package.name, package.description,
-            package.last_updated, package.get_absolute_url())
+            package.last_updated, package.uri)
     
     @classmethod
     def resources_to_atom(cls, resources, 
                           name='All resources', 
                           description='All available resources.',
                           updated=datetime.now(),
-                          absolute_url='/api/resource/'):
-        domain = Site.objects.get_current().domain
-        url = 'http://%s%s' % (domain, absolute_url)
+                          package_uri=None):
+        if not package_uri:
+            package_uri = 'http://%s/api/resource/' % Site.objects.get_current().domain
         feed = a.feed(
             a.title(name),
-            a.id(url),
+            a.id(package_uri),
             a.updated(feedgenerator.rfc3339_date(updated)),
             a.subtitle(description),
-            a.link(rel='self', href=url))
+            a.link(rel='self', href=package_uri))
         for resource in resources:
             feed.append(a.entry(
                     a.title(resource.short_name),
-                    a.id('http://%s%s' % (domain, resource.get_absolute_url())),
+                    a.id(resource.uri),
                     a.updated(feedgenerator.rfc3339_date(resource.last_updated)),
                     a.summary(resource.description),
                     a.author(a.name(resource.developer)),
