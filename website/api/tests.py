@@ -20,6 +20,37 @@ class TestCase(unittest.TestCase):
         self.assertEqual(a, b, '\n' + ''.join(difflib.ndiff(a.splitlines(True), 
                                                             b.splitlines(True))))
 
+class LoggingTestCase(TestCase):
+    def setUp(self):
+        self.c = Client()
+        self.u = User.objects.create_user('tester', '', 'testerpass')
+
+    def tearDown(self):
+        self.u.delete()
+
+    def test_anonymous_logging(self):
+        response = self.c.post(
+            '/api/log/', data='this is a log message', content_type='text/plain')
+        self.assertEqual(401, response.status_code)
+        self.assertEqual('Authorization Required', response.content)
+
+    def test_empty_log_message(self):
+        response = self.c.post(
+            '/api/log/', data='', content_type='text/plain',
+            HTTP_AUTHORIZATION='Basic %s' % base64.b64encode('tester:testerpass'))
+        self.assertEqual(400, response.status_code)
+        self.assertEqual('Bad Request: Log message must not be empty', response.content)
+
+    def test_authenticated_logging(self):
+        response = self.c.post(
+            '/api/log/', data='this is a log message', content_type='text/plain',
+            HTTP_AUTHORIZATION='Basic %s' % base64.b64encode('tester:testerpass'))
+        self.assertEqual(201, response.status_code)
+        self.assertEqual('Created', response.content)
+        records = self.u.log.all()
+        self.assertEqual(1, len(records))
+        self.assertEqual('this is a log message', records[0].message)
+
 class ResourceTestCase(TestCase):
     def setUp(self):
         self.c = Client()

@@ -144,3 +144,7 @@ class Package(models.Model):
     def __unicode__(self):
         return self.name
 
+class LogRecord(models.Model):
+    user = models.ForeignKey(User, editable=False, related_name='log')
+    message = models.CharField(max_length=80, editable=False)
+    timestamp = models.DateTimeField(auto_now=True, editable=False)

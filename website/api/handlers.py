@@ -2,7 +2,7 @@ from api.emitters import OSDEmitter, AtomEmitter, CustomJSONEmitter
 from django import forms
 from django.http import HttpResponse
 from lxml import etree
-from main.models import Resource, Package
+from main.models import Resource, Package, LogRecord
 from piston.emitters import Emitter, Mimer
 from piston.handler import BaseHandler, AnonymousBaseHandler
 from piston.utils import rc
@@ -46,6 +46,18 @@ class PackageHandler(BaseHandler):
     model = Package
     anonymous = AnonymousPackageHandler
 
+class LogRecordHandler(BaseHandler):
+    allowed_methods = ('POST',)
+    model = LogRecord
+    def bad_request(self, message):
+        return HttpResponse('Bad Request: %s' % message, status=400)
+
+    def create(self, request, *args, **kwargs):
+        if len(request.data) == 0:
+            return self.bad_request('Log message must not be empty')
+        LogRecord.objects.create(user=request.user, message=request.data)
+        return rc.CREATED
+
 Emitter.register('osd', OSDEmitter, 'application/opensearchdescription+xml; charset=utf-8')
 Emitter.register('atom', AtomEmitter, 'application/atom+xml; charset=utf-8')
 Emitter.register('json', CustomJSONEmitter, 'application/json; charset=utf-8')
@@ -56,6 +68,9 @@ def load_xml(raw_post_data):
     except etree.XMLSyntaxError:
         raise ValueError
 
-Mimer.register(load_xml, ('application/opensearchdescription+xml',))
+def load_text(raw_post_data):
+    return raw_post_data
 
+Mimer.register(load_xml, ('application/opensearchdescription+xml',))
+Mimer.register(load_text, ('text/plain',))
         
