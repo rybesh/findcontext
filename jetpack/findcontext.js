@@ -1,12 +1,12 @@
 /*jslint eqeqeq: true, immed: true, newcap: true, nomen: true, onevar: true, passfail: true, plusplus: true, regexp: true, undef: true, white: true, indent: 2*/
-/*global jetpack, console, $ */
+/*global jetpack, console, escape, $ */
 
 jetpack.future.import('menu');
 jetpack.future.import('selection');
 jetpack.future.import("slideBar");
 
-SIDEBAR_URI = 'http://127.0.0.1:8000/sidebar'
-API_URI = 'http://127.0.0.1:8000/api'
+var SIDEBAR_URI = 'http://127.0.0.1:8000/sidebar';
+var API_URI = 'http://127.0.0.1:8000/api';
 
 var pkg = null;
 var slidebar = null;
@@ -15,7 +15,7 @@ function initPackage(callback) {
   if (pkg) {
     callback(pkg);
   } else {
-    $.getJSON(API_URI + '/package/', function(packages) {
+    $.getJSON(API_URI + '/package/', function (packages) {
       pkg = packages[0]; // TODO: allow user to select
       callback(pkg);
     });
@@ -25,14 +25,18 @@ function initPackage(callback) {
 function updateSlidebar(callback) {
   var content = (SIDEBAR_URI + '?p=' + pkg.uri + '&q=' + escape(jetpack.selection.text));
   if (slidebar) {
+    slidebar.iframe.addEventListener(
+      "DOMContentLoaded", function iframeLoaded() {
+        slidebar.iframe.removeEventListener("DOMContentLoaded", iframeLoaded, false);
+        callback(slidebar);
+      }, false);
     slidebar.contentDocument.location = content;
-    callback(slidebar);
   } else {
     jetpack.slideBar.append({
       url: content,
       width: 250,
       persist: true,
-      onReady: function(slbr) {
+      onReady: function (slbr) {
         slidebar = slbr;
         callback(slidebar);
       }
@@ -41,14 +45,13 @@ function updateSlidebar(callback) {
 }
 
 function addSlidebarEventListener(slidebar) {
-  console.log('adding event listener');
-  var root = slidebar.contentDocument.rootElement;
-  root.addEventListener('mousedown', function(event) {
-    var node = event.target;
-    console.log('mousedown on', node);
+  var root, node, url;
+  root = slidebar.contentDocument.rootElement;
+  root.addEventListener('mousedown', function (event) {
+    node = event.target;
     while (node !== root) {
       if (node.getAttribute('class') === 'querylink') {
-        var url = node.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
+        url = node.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
         if ((node.tab && node.tab.isClosed) || (! node.tab)) {
           node.tab = jetpack.tabs.open(url);
         }
@@ -61,7 +64,7 @@ function addSlidebarEventListener(slidebar) {
 }
 
 function onContextMenuItemClick() {
-  updateSlidebar(function(slidebar) {
+  updateSlidebar(function (slidebar) {
     addSlidebarEventListener(slidebar);
     slidebar.select();
   });
@@ -69,7 +72,7 @@ function onContextMenuItemClick() {
 
 function onShowContextMenu(menu, context) {
   if (jetpack.selection.text) {
-    initPackage(function(pkg) {
+    initPackage(function (pkg) {
       menu.set({
         label: 'Query ' + pkg.name + ' for "' + jetpack.selection.text + '"',
         command: onContextMenuItemClick
