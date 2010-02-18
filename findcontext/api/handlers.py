@@ -1,4 +1,4 @@
-from api.emitters import OSDEmitter, AtomEmitter, CustomJSONEmitter
+from emitters import OSDEmitter, AtomEmitter, CustomJSONEmitter
 from django import forms
 from django.http import HttpResponse
 from lxml import etree
