@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 from piston.resource import Resource
 from piston.authentication import HttpBasicAuthentication
-from api.handlers import ResourceHandler, PackageHandler, LogRecordHandler
+from handlers import ResourceHandler, PackageHandler, LogRecordHandler
 
 class ResourcesResource(Resource):
     def determine_emitter(self, request, *args, **kwargs):

@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-from main.views import install, jetpack, sidebar
+from views import install, jetpack, sidebar
 
 urlpatterns = patterns('',
    url(r'^install/$', install),

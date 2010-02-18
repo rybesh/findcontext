@@ -2,7 +2,7 @@ from api.emitters import OSDEmitter, AtomEmitter, CustomJSONEmitter
 from django import forms
 from django.http import HttpResponse
 from lxml import etree
-from main.models import Resource, Package, LogRecord
+from findcontext.main.models import Resource, Package, LogRecord
 from piston.emitters import Emitter, Mimer
 from piston.handler import BaseHandler, AnonymousBaseHandler
 from piston.utils import rc

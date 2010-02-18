@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from time import sleep
 from fabric.api import *
 from fabric.contrib.console import confirm
 
@@ -71,6 +72,7 @@ def deploy():
     symlink_current_release()
     migrate()
     restart_webserver()
+    sleep(2)
     local('open http://%(host)s/' % env)
     
 def deploy_version(version):
