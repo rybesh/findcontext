@@ -1,13 +1,13 @@
 import json
 import copy
 import textwrap
+import uri_template
 from urlparse import urlparse
 from django.http import HttpRequest
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import resolve
 from django.contrib.auth.decorators import login_required
-from main import uri_template
 
 def _load_json(request, uri):
     view, args, kwargs = resolve(urlparse(uri)[2])
