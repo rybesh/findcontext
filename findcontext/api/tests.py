@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
+import sys
 import unittest
 import difflib
 import json
 import base64
 import urllib
-import feedvalidator
 import time
 from lxml import etree
 from StringIO import StringIO
@@ -418,32 +418,37 @@ class PackageTestCase(TestCase):
 
 class LiveServerTestCase(unittest.TestCase):
 
-     def setUp(self):
-          self.server = TestServerThread('127.0.0.1', 8081)
-          self.server.start()
+    def setUp(self):
+        self.server = TestServerThread('127.0.0.1', 8081)
+        self.server.start()
 
-     def tearDown(self):
-          self.server.stop()
+    def tearDown(self):
+        self.server.stop()
 
-     def validate_atom(self, url):
-          try:
-               events = feedvalidator.validateURL(url)['loggedEvents']
-          except feedvalidator.logging.ValidationFailure as e:
-               events = [e.event]
-          # Filter logged events
-          from feedvalidator import logging
-          events = [ e for e in events if 
-                     isinstance(e, logging.Error) or 
-                     (isinstance(e, logging.Warning) 
-                      and not isinstance(e, logging.DuplicateUpdated)
-                      and not isinstance(e, logging.SelfDoesntMatchLocation)) ]
-          # Show any remaining events
-          from feedvalidator.formatter.text_plain import Formatter
-          output = Formatter(events)
-          if output: self.fail('\n'.join(output))
+    def validate_atom(self, url):
+        try:
+            import feedvalidator
+        except ImportError:
+            print >> sys.stderr, 'No feedvalidator, skipping validation test'
+            return
+        try:
+            events = feedvalidator.validateURL(url)['loggedEvents']
+        except feedvalidator.logging.ValidationFailure as e:
+            events = [e.event]
+        # Filter logged events
+        from feedvalidator import logging
+        events = [ e for e in events if 
+                   isinstance(e, logging.Error) or 
+                   (isinstance(e, logging.Warning) 
+                    and not isinstance(e, logging.DuplicateUpdated)
+                    and not isinstance(e, logging.SelfDoesntMatchLocation)) ]
+        # Show any remaining events
+        from feedvalidator.formatter.text_plain import Formatter
+        output = Formatter(events)
+        if output: self.fail('\n'.join(output))
 
-     def test_validate_package(self):
-          self.validate_atom('http://127.0.0.1:8081/api/package/1')
+    def test_validate_package(self):
+        self.validate_atom('http://127.0.0.1:8081/api/package/1')
 
-     def test_validate_all_resources(self):
-          self.validate_atom('http://127.0.0.1:8081/api/resource/')
+    def test_validate_all_resources(self):
+        self.validate_atom('http://127.0.0.1:8081/api/resource/')
