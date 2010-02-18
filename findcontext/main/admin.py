@@ -1,4 +1,4 @@
-from main.models import Resource, Package, LogRecord
+from models import Resource, Package, LogRecord
 from django.contrib import admin
 
 class LogRecordAdmin(admin.ModelAdmin):
