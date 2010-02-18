@@ -39,7 +39,7 @@ def test_remote():
     require('path')
     for app in ['auth','contenttypes','sessions','sites','main','api']:
         env['app'] = app
-    run('cd %(path)s/releases/current/%(project_name)s;  ../../../bin/python manage.py test %(app)s' % env)
+        run('cd %(path)s/releases/current/%(project_name)s;  ../../../bin/python manage.py test -v 0 %(app)s' % env)
     
 def setup():
     """
