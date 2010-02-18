@@ -5,17 +5,40 @@ jetpack.future.import('menu');
 jetpack.future.import('selection');
 jetpack.future.import("slideBar");
 
-var SIDEBAR_URI = 'http://127.0.0.1:8000/sidebar';
-var API_URI = 'http://127.0.0.1:8000/api';
+var BASE_URI = 'http://{{ request.get_host }}/'
+var SIDEBAR_URI = BASE_URI + 'sidebar/';
+var API_URI = BASE_URI + 'api/';
+var USER = '{{ user.username }}';
+var PASS = 'celt138';
 
 var pkg = null;
 var slidebar = null;
+
+function base64encode(string) {
+  return jetpack.tabs.focused.contentWindow.btoa(string);
+}
+
+function log(message) {
+  $.ajax({
+    'type': 'POST',
+    'url': API_URI + 'log/',
+    'contentType': 'text/plain',
+    'data': message,
+    'processData': false,
+    'beforeSend': function(request) {
+      request.setRequestHeader(
+        'Authorization', 
+        'Basic ' + base64encode(USER + ':' + PASS));
+    }
+  });
+  console.log(message);
+}
 
 function initPackage(callback) {
   if (pkg) {
     callback(pkg);
   } else {
-    $.getJSON(API_URI + '/package/', function (packages) {
+    $.getJSON(API_URI + 'package/', function (packages) {
       pkg = packages[0]; // TODO: allow user to select
       callback(pkg);
     });
@@ -53,6 +76,7 @@ function addSlidebarEventListener(slidebar) {
       if (node.getAttribute('class') === 'querylink') {
         url = node.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
         if ((node.tab && node.tab.isClosed) || (! node.tab)) {
+          log('Opened ' + url);
           node.tab = jetpack.tabs.open(url);
         }
         node.tab.focus();
@@ -64,6 +88,7 @@ function addSlidebarEventListener(slidebar) {
 }
 
 function onContextMenuItemClick() {
+  log("Selected '" + jetpack.selection.text + "' on " + jetpack.tabs.focused.url);
   updateSlidebar(function (slidebar) {
     addSlidebarEventListener(slidebar);
     slidebar.select();
@@ -82,3 +107,4 @@ function onShowContextMenu(menu, context) {
 }
 
 jetpack.menu.context.page.beforeShow = onShowContextMenu;
+

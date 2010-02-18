@@ -51,6 +51,16 @@ class LoggingTestCase(TestCase):
         self.assertEqual(1, len(records))
         self.assertEqual('this is a log message', records[0].message)
 
+    def test_authenticated_logging_with_charset(self):
+        response = self.c.post(
+            '/api/log/', data='this is a log message', content_type='text/plain; charset=UTF-8',
+            HTTP_AUTHORIZATION='Basic %s' % base64.b64encode('tester:testerpass'))
+        self.assertEqual(201, response.status_code)
+        self.assertEqual('Created', response.content)
+        records = self.u.log.all()
+        self.assertEqual(1, len(records))
+        self.assertEqual('this is a log message', records[0].message)
+
 class ResourceTestCase(TestCase):
     def setUp(self):
         self.c = Client()

@@ -3,8 +3,10 @@ import copy
 import textwrap
 from urlparse import urlparse
 from django.http import HttpRequest
+from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import resolve
+from django.contrib.auth.decorators import login_required
 from main import uri_template
 
 def _load_json(request, uri):
@@ -14,6 +16,16 @@ def _load_json(request, uri):
     request.GET = GET
     kwargs['request'] = request
     return json.loads(view(*args, **kwargs).content)    
+
+@login_required
+def install(request):
+    return render_to_response('install.html')
+
+@login_required
+def jetpack(request):
+    return render_to_response('findcontext.js', 
+                              context_instance=RequestContext(request),
+                              mimetype='text/javascript')
 
 def sidebar(request):
     package_uri = request.GET.get('p')
@@ -32,7 +44,7 @@ def sidebar(request):
     info = { 'height': 60 }
     button = { 'width': 240, 'height': 25, 'spacing': 31 }
     height = button['spacing'] * len(resources) + info['height'] + 5
-    return render_to_response('index.svg', { 
+    return render_to_response('sidebar.svg', { 
             'query': query, 'resources': resources,
             'height': height, 'button': button, 'info': info },
                               mimetype='image/svg+xml')

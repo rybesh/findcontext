@@ -72,5 +72,5 @@ def load_text(raw_post_data):
     return raw_post_data
 
 Mimer.register(load_xml, ('application/opensearchdescription+xml',))
-Mimer.register(load_text, ('text/plain',))
+Mimer.register(load_text, ('text/plain', 'text/plain; charset=UTF-8'))
         

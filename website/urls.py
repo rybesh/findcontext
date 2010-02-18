@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     (r'^api/', include('website.api.urls')),
     (r'^admin/doc/', include('django.contrib.admindocs.urls')),
     (r'^admin/', include(admin.site.urls)),
-    (r'^$', include('website.main.urls')),
+    (r'^accounts/login/$', 'django.contrib.auth.views.login'),
+    (r'^', include('website.main.urls')),
 )
