@@ -5,7 +5,7 @@ from django.db.models.query import QuerySet
 from django.utils import feedgenerator
 from lxml import etree
 from lxml.builder import ElementMaker
-from main.models import Resource, Package
+from findcontext.main.models import Resource, Package
 from piston.emitters import XMLEmitter, JSONEmitter
 
 ATOM_NS = 'http://www.w3.org/2005/Atom'
