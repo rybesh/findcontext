@@ -1,13 +1,16 @@
-from emitters import OSDEmitter, AtomEmitter, CustomJSONEmitter
+import os
 from django import forms
 from django.http import HttpResponse
 from lxml import etree
-from findcontext.main.models import Resource, Package, LogRecord
 from piston.emitters import Emitter, Mimer
 from piston.handler import BaseHandler, AnonymousBaseHandler
 from piston.utils import rc
+from emitters import OSDEmitter, AtomEmitter, CustomJSONEmitter
+from findcontext.main.models import Resource, Package, LogRecord
 
-osd_schema = etree.RelaxNG(file='schemas/opensearchdescription.rng')
+osd_schema = etree.RelaxNG(
+    file=os.path.abspath(os.path.join(os.path.dirname(__file__), 
+                                      'schemas/opensearchdescription.rng')))
 
 class AnonymousResourceHandler(AnonymousBaseHandler):
     allowed_methods = ('GET',)
