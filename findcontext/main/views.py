@@ -17,6 +17,9 @@ def _load_json(request, uri):
     kwargs['request'] = request
     return json.loads(view(*args, **kwargs).content)    
 
+def index(request):
+    return render_to_response('index.html')
+
 @login_required
 def install(request):
     return render_to_response('install.html')
