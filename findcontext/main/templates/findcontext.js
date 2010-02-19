@@ -67,6 +67,17 @@ function updateSlidebar(callback) {
   }
 }
 
+function trackTab(doc) {
+  if (! doc.defaultView.frameElement) { 
+    if (doc.referrer) {
+      log('Opened ' + this.url + ' (via ' + doc.referrer + ')');
+    } else { // stop tracking this tab
+      log('Stopping tracking at ' + this.url);
+      this.onReady.unbind(trackTab);
+    }
+  }  
+}
+
 function addSlidebarEventListener(slidebar) {
   var root, node, url;
   root = slidebar.contentDocument.rootElement;
@@ -75,10 +86,20 @@ function addSlidebarEventListener(slidebar) {
     while (node !== root) {
       if (node.getAttribute('class') === 'querylink') {
         url = node.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
-        if ((node.tab && node.tab.isClosed) || (! node.tab)) {
-          log('Opened ' + url);
-          node.tab = jetpack.tabs.open(url);
-        }
+        node.tab = jetpack.tabs.open(url);
+        node.tab.onReady(
+          function trackTab(doc) {
+            if (! doc.defaultView.frameElement) { 
+              if (doc.referrer) {
+                log('Opened ' + this.url + ' (via ' + doc.referrer + ')');
+              } else if (this.url === url) { 
+                log('Opened ' + this.url);
+              } else { // stop tracking this tab
+                this.onReady.unbind(trackTab);
+              }
+            }  
+          }
+        );
         node.tab.focus();
         break;
       }
