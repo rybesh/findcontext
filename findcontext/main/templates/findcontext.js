@@ -1,12 +1,13 @@
 /*jslint eqeqeq: true, immed: true, newcap: true, nomen: true, onevar: true, passfail: true, plusplus: true, regexp: true, undef: true, white: true, indent: 2*/
 /*global jetpack, console, encodeURIComponent, $ */
 
+jetpack.future.import('me');  
 jetpack.future.import('menu');
 jetpack.future.import('selection');
 jetpack.future.import("slideBar");
 
 var VERSION = '0.1';
-var BASE_URI = 'http://{{ request.get_host }}/'
+var BASE_URI = 'http://{{ request.get_host }}/';
 var SIDEBAR_URI = BASE_URI + 'sidebar/';
 var API_URI = BASE_URI + 'api/';
 var USER = '{{ user.username }}';
@@ -182,4 +183,6 @@ jetpack.tabs.onReady(function () {
   s.appendChild(js);
   doc.getElementsByTagName('head')[0].appendChild(s);
 });
-
+jetpack.me.onFirstRun(function () {
+  jetpack.tabs.focused.contentDocument.location = BASE_URI;
+});
