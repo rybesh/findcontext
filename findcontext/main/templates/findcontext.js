@@ -5,6 +5,7 @@ jetpack.future.import('menu');
 jetpack.future.import('selection');
 jetpack.future.import("slideBar");
 
+var VERSION = '0.1';
 var BASE_URI = 'http://{{ request.get_host }}/'
 var SIDEBAR_URI = BASE_URI + 'sidebar/';
 var API_URI = BASE_URI + 'api/';
@@ -173,4 +174,12 @@ function onShowContextMenu(menu, context) {
 }
 
 jetpack.menu.context.page.beforeShow = onShowContextMenu;
+jetpack.tabs.onReady(function () {
+  var doc, s, js;
+  doc = jetpack.tabs.focused.contentDocument;
+  s = doc.createElement('script');
+  js = doc.createTextNode("$('body').trigger('findcontext', '" + VERSION + "');");
+  s.appendChild(js);
+  doc.getElementsByTagName('head')[0].appendChild(s);
+});
 

@@ -4,7 +4,7 @@
     <title>Find Context</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/combo?2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css&2.8.0r4/build/base/base-min.css" type="text/css" media="screen"/>
     <script src="http://www.google.com/jsapi"></script>
-    <script> google.load("jquery", "1"); </script>
+    <script> google.load('jquery', '1'); </script>
     <style>
       li.done a {
         color: #a7a7a7;
@@ -30,12 +30,20 @@
       For staff: <a href="/admin/main/logrecord/">View the Find Context log</a>
     </div>
     <script>
+      function done(id) {
+        $(id).addClass('done').append(' <span class="done">Done!</span>');
+      }
       if ($.browser.mozilla && $.browser.version === '1.9.2') {
-        $('#step1').addClass('done').append(' <span class="done">Done!</span>');
+        done('#step1');
       }
       function jetpackInstalled() {
-        $('#step2').addClass('done').append(' <span class="done">Done!</span>');
+        done('#step2');
       }
+      $('body').bind('findcontext', function (event, version) {
+        if (version === '0.1') {
+          done('#step3');
+        }
+      });
       $('.xpi-link').click(function (event) {
         event.preventDefault();
         InstallTrigger.install({
