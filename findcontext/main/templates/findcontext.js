@@ -5,10 +5,10 @@ jetpack.future.import('menu');
 jetpack.future.import('selection');
 jetpack.future.import("slideBar");
 
-var BASE_URI = 'http://127.0.0.1:8000/'; //'http://{{ request.get_host }}/'
+var BASE_URI = 'http://{{ request.get_host }}/'
 var SIDEBAR_URI = BASE_URI + 'sidebar/';
 var API_URI = BASE_URI + 'api/';
-var USER = 'user01'; //'{{ user.username }}';
+var USER = '{{ user.username }}';
 var PASS = 'celt138';
 
 var pkg = null;
