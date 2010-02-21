@@ -3,32 +3,49 @@
   <head>
     <title>Find Context</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/combo?2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css&2.8.0r4/build/base/base-min.css" type="text/css" media="screen"/>
+    <script src="http://www.google.com/jsapi"></script>
+    <script> google.load("jquery", "1"); </script>
+    <style>
+      li.done a {
+        color: #a7a7a7;
+        text-decoration: line-through;
+      }
+      span.done {
+        color: green;
+      }
+    </style>
   </head>
   <body style="text-align: left;">
     <div>
       For users:
       <ol>
-        <li><a href="http://www.mozilla.com/firefox/">Install or upgrade to the latest Firefox</a></li>
-        <li><a class="xpi-link" 
-               href="/media/jetpack-0.8.1-all.xpi"
-               data-hash="sha1:65a92888b97fea1ed505d381356050d258b7893e">Install our customized Jetpack add-on</a></li>
-        <li><a href="/install/">Install the Find Context jetpack</a></li>
+        <li id="step1"><a href="http://www.mozilla.com/firefox/">Install or upgrade to the latest Firefox</a></li>
+        <li id="step2"><a class="xpi-link" 
+                          href="/media/jetpack-0.8.1-all.xpi"
+                          data-hash="sha1:65a92888b97fea1ed505d381356050d258b7893e">Install our customized Jetpack add-on</a></li>
+        <li id="step3"><a href="/install/">Install the Find Context jetpack</a></li>
       </ol>
     </div>
     <div>
       For staff: <a href="/admin/main/logrecord/">View the Find Context log</a>
     </div>
-    <script type="application/javascript">
-      Array.forEach(
-        document.getElementsByClassName('xpi-link'),
-        function (link) {
-          link.addEventListener('click', function () {
-            InstallTrigger.install({
-              'Jetpack': { 'URL': this.href, 
-                           'Hash': this.getAttribute('data-hash') }
-            });
-          }, false);
+    <script>
+      if ($.browser.mozilla && $.browser.version === '1.9.2') {
+        $('#step1').addClass('done').append(' <span class="done">Done!</span>');
+      }
+      function jetpackInstalled() {
+        $('#step2').addClass('done').append(' <span class="done">Done!</span>');
+      }
+      $('.xpi-link').click(function (event) {
+        event.preventDefault();
+        InstallTrigger.install({
+          'Jetpack': { 'URL': this.href, 
+          'Hash': this.getAttribute('data-hash') }
         });
+      });
     </script>
+    <img src="chrome://jetpack/content/gfx/jetpack.png"
+         onload="jetpackInstalled();"
+         style="display: none;"/>
   </body>
 </html>
