@@ -40,7 +40,8 @@ def sidebar(request):
         r = {}
         osd = e['content']['OpenSearchDescription']
         template = osd['Url']['template']
-        r['query_uri'] = uri_template.sub(template, { 'searchTerms': query });
+        r['query_uri'] = uri_template.sub(
+            template, { 'searchTerms': query.encode('utf-8') });
         r['name'] = osd['ShortName']['$t']
         r['description'] = textwrap.wrap(osd['Description']['$t'], 43)
         resources.append(r)

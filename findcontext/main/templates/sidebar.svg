@@ -60,8 +60,19 @@
         fill: #FFFFFF;
       }
       a:hover .solid {
+        stroke: #000000;
+      }
+      a.results .solid {
         fill: #ADF67F;
+      }
+      a.results:hover .solid {
         stroke: green;
+      }
+      a.noresults .solid {
+        fill: #DC7171;
+      }
+      a.noresults:hover .solid {
+        stroke: red;
       }
       .gradient-up {
         fill: url(#up-gradient);
