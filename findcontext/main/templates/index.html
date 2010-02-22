@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
     <title>Find Context</title>
-    <link rel="stylesheet" href="http://yui.yahooapis.com/combo?2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css&2.8.0r4/build/base/base-min.css" type="text/css" media="screen"/>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/combo?2.8.0r4/build/reset-fonts-grids/reset-fonts-grids.css&amp;2.8.0r4/build/base/base-min.css" type="text/css" media="screen"/>
     <script src="http://www.google.com/jsapi"></script>
     <script> google.load('jquery', '1'); </script>
     <style>
@@ -31,6 +31,7 @@
       For staff: <a href="/admin/main/logrecord/">View the Find Context log</a>
     </div>
     <script>
+      <![CDATA[
       function done(id) {
         $(id).addClass('done').append(' <span class="done">Done!</span>');
       }
@@ -52,6 +53,7 @@
           'Hash': this.getAttribute('data-hash') }
         });
       });
+      ]]>
     </script>
     <img src="chrome://jetpack/content/gfx/jetpack.png"
          onload="jetpackInstalled();"
