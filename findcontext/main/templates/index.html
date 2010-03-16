@@ -74,11 +74,11 @@
       // <![CDATA[
       var steps_done = [];
       function not_yet(id) {
-        return ($.inArray(id, steps) === -1);
+        return ($.inArray(id, steps_done) === -1);
       }
       function done(id) {
         $(id).addClass('step-done').after(' <span class="done">Done!</span>');
-        steps.push(id);
+        steps_done.push(id);
       }
       if ($.browser.mozilla && $.browser.version === '1.9.2') {
         done('#step1');
