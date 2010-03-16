@@ -6,9 +6,8 @@
     <script src="http://www.google.com/jsapi"></script>
     <script> google.load('jquery', '1'); </script>
     <style>
-      li.done a {
-        color: #a7a7a7;
-        text-decoration: line-through;
+      .step-done {
+        text-decoration: line-through !important;
       }
       span.done {
         color: green;
@@ -74,7 +73,7 @@
       // <![CDATA[
 
       function done(id) {
-        $(id).addClass('done').append(' <span class="done">Done!</span>');
+        $(id).addClass('step-done').after(' <span class="done">Done!</span>');
       }
       if ($.browser.mozilla && $.browser.version === '1.9.2') {
         done('#step1');
