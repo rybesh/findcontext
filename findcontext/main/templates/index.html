@@ -71,11 +71,10 @@
       </div>
     </div>
     <script>
-      <![CDATA[
       function done(id) {
         $(id).addClass('done').append(' <span class="done">Done!</span>');
       }
-      if ($.browser.mozilla && $.browser.version === '1.9.2') {
+      if ($.browser.mozilla &amp;&amp; $.browser.version === '1.9.2') {
         done('#step1');
       }
       function jetpackInstalled() {
@@ -93,7 +92,6 @@
           'Hash': this.getAttribute('data-hash') }
         });
       });
-      ]]>
     </script>
     <img src="chrome://jetpack/content/gfx/jetpack.png"
          onload="jetpackInstalled();"
