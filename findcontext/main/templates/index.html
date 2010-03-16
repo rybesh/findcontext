@@ -72,17 +72,25 @@
     </div>
     <script>
       // <![CDATA[
-
+      var steps_done = [];
+      function not_yet(id) {
+        return ($.inArray(id, steps) === -1);
+      }
       function done(id) {
         $(id).addClass('step-done').after(' <span class="done">Done!</span>');
+        steps.push(id);
       }
       if ($.browser.mozilla && $.browser.version === '1.9.2') {
         done('#step1');
-        document.location.hash = '#step2';
+        if (not_yet('#step2) && not_yet('#step3')) {
+          document.location.hash = '#step2';
+        }
       }
       function jetpackInstalled() {
         done('#step2');
-        document.location.hash = '#step3';
+        if (not_yet('#step3')) {
+          document.location.hash = '#step3';
+        }
       }
       $('body').bind('findcontext', function (event, version) {
         if (version === '0.1') {
