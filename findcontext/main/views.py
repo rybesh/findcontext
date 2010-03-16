@@ -3,7 +3,7 @@ import copy
 import textwrap
 import uri_template
 from urlparse import urlparse
-from django.http import HttpRequest
+from django.http import HttpRequest, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.core.urlresolvers import resolve
@@ -22,12 +22,14 @@ def index(request):
 
 @login_required
 def install(request):
-    return render_to_response('install.html')
+    return render_to_response('install.html', 
+                              context_instance=RequestContext(request))
 
-@login_required
 def jetpack(request):
+    if not 'user' in request.GET:
+        raise Http404
     return render_to_response('findcontext.js', 
-                              context_instance=RequestContext(request),
+                              { 'user': request.GET['user'] },
                               mimetype='text/javascript')
 
 def sidebar(request):
