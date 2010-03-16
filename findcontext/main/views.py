@@ -30,6 +30,7 @@ def jetpack(request):
         raise Http404
     return render_to_response('findcontext.js', 
                               { 'user': request.GET['user'] },
+                              context_instance=RequestContext(request),
                               mimetype='text/javascript')
 
 def sidebar(request):
