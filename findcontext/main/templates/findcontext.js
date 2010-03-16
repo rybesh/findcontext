@@ -10,7 +10,7 @@ var VERSION = '0.1';
 var BASE_URI = 'http://{{ request.get_host }}/';
 var SIDEBAR_URI = BASE_URI + 'sidebar/';
 var API_URI = BASE_URI + 'api/';
-var USER = '{{ username }}';
+var USER = '{{ user }}';
 var PASS = 'celt138';
 
 var pkg = null;
