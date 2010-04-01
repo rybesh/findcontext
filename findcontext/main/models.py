@@ -10,7 +10,7 @@ class ElementField(models.Field):
     description = 'A parsed XML document or fragment'
     __metaclass__ = models.SubfieldBase
     def __init__(self, *args, **kwargs):
-        kwargs['editable'] = False
+        #kwargs['editable'] = False
         super(ElementField, self).__init__(*args, **kwargs)
     def db_type(self):
         return 'xml'
