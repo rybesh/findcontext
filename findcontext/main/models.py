@@ -15,6 +15,8 @@ class ElementField(models.Field):
     def db_type(self):
         return 'xml'
     def to_python(self, value):
+        if value is None:
+            return None
         if isinstance(value, etree._Element):
             return value
         return etree.fromstring(value)
