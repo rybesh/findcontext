@@ -34,10 +34,12 @@ class ElementField(models.Field):
     def db_type(self):
         return 'xml'
     def to_python(self, value):
-        if value is None:
-            return None
         if isinstance(value, etree._Element):
             return value
+        if not (isinstance(value, str) or isinstance(value, unicode)):
+            raise TypeError('%s cannot be parsed to XML' % type(value))
+        if len(value) == 0:
+            return None
         return etree.fromstring(value)
     def get_db_prep_value(self, value):
         return etree.tostring(value)
