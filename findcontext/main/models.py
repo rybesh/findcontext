@@ -4,7 +4,26 @@ from django import forms
 from django.db import models, transaction
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
+from django.utils.safestring import mark_safe
+from django.utils.html import conditional_escape
+from django.utils.encoding import force_unicode
 from lxml import etree
+
+class XMLWidget(forms.Textarea):
+    def _format_value(self, value):
+        if value is None:
+            return ''
+        if isinstance(value, etree._Element):
+            return etree.tostring(value)
+        if isinstance(value, str) or isinstance(value, unicode):
+            return value
+        raise TypeError('%s cannot be formatted as XML' % value)
+ 
+    def render(self, name, value, attrs=None):
+        final_attrs = self.build_attrs(attrs, name=name)
+        return mark_safe(u'<textarea%s>%s</textarea>' % (
+                forms.util.flatatt(final_attrs),
+                conditional_escape(force_unicode(self._format_value(value)))))
 
 class ElementField(models.Field):
     description = 'A parsed XML document or fragment'
@@ -26,7 +45,7 @@ class ElementField(models.Field):
         value = self._get_val_from_obj(obj)
         return self.get_db_prep_value(value)
     def formfield(self, **kwargs):
-        defaults = {'widget': forms.Textarea}
+        defaults = {'widget': XMLWidget}
         defaults.update(kwargs)
         return super(ElementField, self).formfield(**defaults)
 
