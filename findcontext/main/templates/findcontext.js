@@ -106,7 +106,7 @@ function hasClass(elem, value) {
 
 function addSlidebarEventListener(slidebar) {
   var root, node, url;
-  root = slidebar.contentDocument.rootElement;
+  root = slidebar.contentDocument.documentElement;
   root.addEventListener('mousedown', function (event) {
     node = event.target;
     while (node !== root) {
