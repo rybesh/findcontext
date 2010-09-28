@@ -4,6 +4,8 @@
 from time import sleep
 from fabric.api import *
 from fabric.contrib.console import confirm
+from fabric.contrib.files import exists
+from fabric.utils import abort
 
 # Globals
 
