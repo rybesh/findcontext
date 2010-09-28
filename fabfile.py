@@ -17,6 +17,7 @@ def dev():
     env.user = 'ryanshaw'
     env.path = '/Library/WebServer/Documents/%(project_name)s' % env
     env.vhosts_path = '/etc/apache2/sites'
+    env.site_packages = '/Library/Python/2.6/site-packages'
 
 def pro():
     "Use the production webserver."
@@ -24,6 +25,7 @@ def pro():
     env.user = 'ryanshaw'
     env.path = '/db/projects/%(project_name)s' % env
     env.vhosts_path = '/etc/httpd/sites.d/'
+    env.site_packages = '/usr/lib64/python2.6/site-packages'
 
 # Tasks
 
@@ -67,6 +69,7 @@ def deploy():
     env.release = time.strftime('%Y%m%d%H%M%S')
     upload_tar_from_git()
     upload_local_settings()
+    symlink_system_packages()
     install_requirements()
     install_site()
     symlink_current_release()
@@ -106,6 +109,8 @@ def clean():
                 default=False)):
         with cd(env.path):
             run('rm -rf packages; rm -rf releases')
+            run('mkdir -p packages; mkdir -p releases')
+            run('cd releases; touch none; ln -sf none current; ln -sf none previous')
     
 # Helpers. These are called by other functions rather than directly.
 
@@ -129,6 +134,21 @@ def install_requirements():
     require('release', provided_by=[deploy, setup])
     run('cd %(path)s; pip install -E . -r ./releases/%(release)s/requirements.txt' % env)
     
+def symlink_system_packages():
+    "Create symlinks to system site-packages."
+    require('site_packages', provided_by=[dev])
+    require('path')
+    site_packages = env.path + '/lib/python2.6/site-packages'
+    with cd(site_packages):
+        with open('requirements.txt') as reqs:
+            for line in reqs:
+                if line.startswith('# symlink: '):
+                    target = env.site_packages + '/' + line[11:-1]
+                    if exists(target):
+                        run('ln -f -s %s' % target)
+                    else:
+                        abort('Missing %s' % target)
+
 def install_site():
     "Add the virtualhost file to apache."
     require('release', provided_by=[deploy, setup])

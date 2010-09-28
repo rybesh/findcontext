@@ -1,5 +1,6 @@
 Django==1.1.1
 django-piston==0.2.2
 lxml==2.2.4
-psycopg2==2.0.13
-wsgiref==0.1.2
+
+# Symlinks to system packages
+# symlink: psycopg2
